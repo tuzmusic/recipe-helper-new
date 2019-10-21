@@ -1,0 +1,15 @@
+{
+  "title": "Guacomole",
+  "slug": "guacomole",
+  "ingredients": [
+    { "text": "1 avocado" },
+    { "text": "1 tomato, diced" },
+    { "text": "1/2 cup onion, diced" },
+    { "text": "1/4 cup cilantro, chopped" }
+  ],
+  "steps": [
+    { "text": "Mix ingredients" },
+    { "text": "Refridgerate for 30 minutes" },
+    { "text": "Eat with chips" }
+  ]
+}

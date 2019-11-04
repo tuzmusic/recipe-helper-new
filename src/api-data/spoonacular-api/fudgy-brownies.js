@@ -10,7 +10,7 @@ const headers = [
 ]
  */
 
-export default {
+export const fudgyBrowniesResponse = {
   vegetarian: true,
   vegan: false,
   glutenFree: false,

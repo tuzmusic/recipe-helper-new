@@ -1,6 +1,8 @@
 import React from "react";
 import Recipe from "../../models/Recipe";
-import { Col, Container, Row } from "react-bootstrap";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import IngredientList from "../IngredientList/IngredientList";
 import InstructionsList from "../InstructionsList/InstructionsList";
 

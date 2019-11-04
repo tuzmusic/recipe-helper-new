@@ -7,11 +7,6 @@ interface AppState {
   currentRecipe: CurrentRecipeState
 }
 
-interface CurrentRecipeState {
-  recipe?: Recipe,
-  error?: Error
-}
-
 interface CurrentRecipeAction {
   type: ActionType,
 }
@@ -38,6 +33,11 @@ interface ConvertFailed extends CurrentRecipeAction {
 
 type Action = SetRecipeAction | ConvertStarted | ConvertFailed
 //endregion
+
+interface CurrentRecipeState {
+  recipe?: Recipe,
+  error?: Error
+}
 
 export default {
   name: 'currentRecipe',

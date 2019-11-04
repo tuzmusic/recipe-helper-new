@@ -219,7 +219,7 @@ export const fudgyBrowniesResponse = {
     }
   ],
   id: 568604,
-  title: "Fudgy Brownies {Think: Homemade Brownies Like The Boxed Mix!}",
+    title: "Fudgy Brownies",
   readyInMinutes: 45,
   servings: 16,
   image: "https://spoonacular.com/recipeImages/568604-556x370.jpg",

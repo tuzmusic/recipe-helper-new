@@ -1,10 +1,10 @@
 import React from "react";
-import ImportRecipeForm from "../ImportRecipeForm/ImportRecipeForm";
+import ImportRecipeFormContainer from "../ImportRecipeForm/ImportRecipeFormContainer";
 
 const App: React.FC = () => {
   return (
     <div className="App">
-      <ImportRecipeForm />
+      <ImportRecipeFormContainer />
     </div>
   );
 };

@@ -1,32 +1,34 @@
+import { SpoonacularApiIngredient } from "../types/Recipe.types";
+
 export default class Ingredient {
-  text = "";
-  id: number | undefined;
-  original = "";
-  originalString = "";
-  number: number | undefined;
-  unit = "";
+    name = "";
+    id?: number;
+    original = "";
+    originalString = "";
+    number: number | undefined;
+    unit = "";
 
-  constructor(arg?: PotentialConstructorArgument) {
-    if (!arg) return;
-    if (typeof arg === "string") this.text = arg;
-    else if (typeof arg === "object") {
-      this.text = arg.text;
+    constructor(arg?: PotentialConstructorArgument) {
+        if (!arg) return;
+        // allow creating an ingredient from a string
+        if (typeof arg === "string") this.name = arg;
+        // allow creating an ingredient from an object
+        else if (typeof arg === "object") {
+            this.name = arg.name || "";
+            this.id = arg.id;
+        }
     }
-  }
 
-  static fromSpoonacularApi({
-    id,
-    name,
-    original,
-    originalString,
-    amount,
-    unit
-  }: any) {
-    const ing = new Ingredient();
-    const text = name;
-    Object.assign(ing, { id, text, originalString, amount, unit });
-    return ing;
-  }
+    static fromSpoonacularApi({
+        id,
+        name,
+        original,
+        originalString,
+        amount,
+        unit
+    }: SpoonacularApiIngredient) {
+        return Object.assign(new Ingredient(), {id, name, originalString, amount, unit});
+    }
 }
 
-type PotentialConstructorArgument = string | { text: string };
+type PotentialConstructorArgument = string | { name?: string, id?: number };

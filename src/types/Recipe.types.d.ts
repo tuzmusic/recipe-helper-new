@@ -14,14 +14,8 @@ export interface SpoonacularApiRecipe {
 export interface SpoonacularApiInstructionStep {
     number: number;
     step: string;
-    ingredients: [];
+    ingredients: Imaged[];
     equipment: Imaged[]
-}
-
-export interface Imaged {
-    id: number;
-    name: string;
-    image: string;
 }
 
 export interface SpoonacularApiIngredient {
@@ -36,6 +30,12 @@ export interface SpoonacularApiIngredient {
         us: Measure
         metric: Measure
     }
+}
+
+export interface Imaged {
+    id: number;
+    name: string;
+    image: string;
 }
 
 export interface Measure {

@@ -11,7 +11,7 @@ const ImportRecipeForm: React.FC<ImportFormProps> = ({ onSubmit }) => {
   const [url, setUrl] = useState(mockUrl);
   
   return (
-    <div className="ImportRecipeForm">
+    <div className="import-recipe-form">
       <label htmlFor="recipe-url">Enter a url of a recipe:</label>
       <br/>
       <input id="recipe-url-input"

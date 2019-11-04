@@ -65,9 +65,14 @@ export default {
       const res = await axios(recipeRequest(recipeUrl));
       const recipe = Recipe.fromSpoonacularApi(res.data);
       dispatch({ type: ActionType.SET_RECIPE, recipe })
-    } catch (e) {
-      dispatch({ type: ActionType.CONVERT_RECIPE_FAILED, e })
+    } catch (error) {
+      dispatch({ type: ActionType.CONVERT_RECIPE_FAILED, error })
     }
   }
 }
+
+/*
+* https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/extract?url=http%3A%2F%2Fwww.melskitchencafe.com%2Fthe-best-fudgy-brownies%2F
+* https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/extract?url=http%3A%2F%2Fwww.melskitchencafe.com%2Fthe-best-fudgy-brownies%2F
+* */
 

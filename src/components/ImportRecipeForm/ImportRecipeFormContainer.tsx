@@ -1,26 +1,14 @@
 import React from "react";
 import ImportRecipeForm from "./ImportRecipeForm";
-import axios from 'axios'
-import { recipeRequest } from "../../utils/requests";
+import { connect } from 'redux-bundler-react'
 
-const ImportRecipeFormContainer: React.FC = () => {
-
-    // TODO: make this a redux action! :P
-    async function onSubmitUrl(recipeUrl: string) {
-        try {
-            // NOTE: axios is mocking this. still haven't gotten the actual request to work with axios. ARGGGH!
-            const res = await axios(recipeRequest(recipeUrl));
-            console.log(res)
-        } catch (e) {
-            console.log(e)
-        }
-    }
-
-    return (
-        <div className="ImportRecipeFormContainer">
-            <ImportRecipeForm onSubmit={ onSubmitUrl }/>
-        </div>
-    );
+const ImportRecipeFormContainer: React.FC<any> = ({ doConvertRecipe }) => {
+  
+  return (
+    <div className="ImportRecipeFormContainer">
+      <ImportRecipeForm onSubmit={ doConvertRecipe }/>
+    </div>
+  );
 };
 
-export default ImportRecipeFormContainer;
+export default connect('doConvertRecipe', ImportRecipeFormContainer);

@@ -6,13 +6,18 @@ import { fudgyBrowniesResponse } from "../../api-data/spoonacular-api/fudgy-brow
 import createStore from '../../redux/bundles'
 import { Provider } from 'redux-bundler-react'
 import InnerAppContainer from "./InnerAppContainer";
+import Recipe from "../../models/Recipe";
 
 const mock = new MockAdapter(axios);
 mock.onGet(recipeRequest().url).reply(200, fudgyBrowniesResponse);
 
+// const initialState = {}
+const startingRecipe = Recipe.fromSpoonacularApi(fudgyBrowniesResponse);
+const initialState = { currentRecipe: { recipe: startingRecipe } };
+
 const App: React.FC = () => {
   return (
-    <Provider store={ createStore({}) }>
+    <Provider store={ createStore(initialState) }>
       <div className="App">
         <InnerAppContainer/>
       </div>

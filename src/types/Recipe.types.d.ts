@@ -8,7 +8,7 @@ export interface SpoonacularApiRecipe {
   image: string;
   imageType: string;
   instructions: string;
-  analyzedInstructions: [{ name: string, steps: SpoonacularApiInstructionStep[] }]
+  analyzedInstructions: { name: string, steps: SpoonacularApiInstructionStep[] }[]
 }
 
 export interface SpoonacularApiInstructionStep {

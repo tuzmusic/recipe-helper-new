@@ -5,7 +5,7 @@ interface ImportFormProps {
   onSubmit: (url: string) => void;
 }
 
-export const mockUrl = 'https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/extract';
+export const mockUrl = 'https://www.melskitchencafe.com/the-best-fudgy-brownies/';
 
 const ImportRecipeForm: React.FC<ImportFormProps> = ({ onSubmit }) => {
   const [url, setUrl] = useState(mockUrl);

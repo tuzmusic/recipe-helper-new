@@ -1,11 +1,11 @@
 import React from "react";
 import { connect } from 'redux-bundler-react'
-import RecipeSummary from "../RecipeSummary/RecipeSummary";
 import ImportRecipeFormContainer from "../ImportRecipeForm/ImportRecipeFormContainer";
+import CookingSessionContainer from "../CookingSession/CookingSessionContainer";
 
 const InnerAppContainer: React.FC<any> = ({ currentRecipe }) => {
   return (currentRecipe
-    ? <RecipeSummary recipe={ currentRecipe }/>
+    ? <CookingSessionContainer/>
     : <ImportRecipeFormContainer/>)
 };
 

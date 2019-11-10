@@ -1,10 +1,12 @@
 import Recipe from "../../models/Recipe";
 import axios from "axios";
 import { recipeRequest } from "../../utils/requests";
+import { createSelector } from "reselect";
+import Instruction from "../../models/Instruction";
 
 //region Types
-interface AppState {
-  currentRecipe: CurrentRecipeState
+export interface AppState {
+  currentRecipe: CurrentRecipeState,
 }
 
 interface CurrentRecipeAction {
@@ -32,41 +34,69 @@ interface ConvertFailed extends CurrentRecipeAction {
 }
 
 type Action = SetRecipeAction | ConvertStarted | ConvertFailed
+
 //endregion
 
-interface CurrentRecipeState {
+export interface CurrentRecipeState {
   recipe?: Recipe,
-  error?: Error
+  error?: Error,
+  currentStepIndex: number
 }
 
-export default {
+const initialState: CurrentRecipeState = {
+  currentStepIndex: 0
+};
+
+const bundle: any = {
   name: 'currentRecipe',
   
-  reducer: (state: CurrentRecipeState = {}, action: Action) => {
+  reducer: (state: CurrentRecipeState = initialState, action: Action) => {
     switch (action.type) {
       case ActionType.SET_RECIPE:
-        console.log('SET_RECIPE');
         return { ...state, recipe: action.recipe };
       case ActionType.CONVERT_RECIPE_FAILED:
-        console.log(action.error);
         return { ...state, error: action.error };
       default:
         return state
     }
-  },
-  
-  selectCurrentRecipe: (state: AppState) => state.currentRecipe.recipe,
-  
-  doSetRecipe: (recipe: Recipe) => ({ type: ActionType.SET_RECIPE, recipe }),
-  
-  doConvertRecipe: (recipeUrl: string) => async ({ dispatch }: { dispatch: any }) => {
-    try {
-      // NOTE: axios is mocking this. still haven't gotten the actual request to work with axios. ARGGGH!
-      const res = await axios(recipeRequest(recipeUrl));
-      const recipe = Recipe.fromSpoonacularApi(res.data);
-      dispatch({ type: ActionType.SET_RECIPE, recipe })
-    } catch (error) {
-      dispatch({ type: ActionType.CONVERT_RECIPE_FAILED, error })
-    }
   }
-}
+};
+
+//region SELECTORS
+// todo: this doesn't actually type the selector correctly. (typeof bundle.selectCurrentStep = any, should =
+//  Instruction)
+type BundleSelector<T> = (state: AppState) => T | undefined
+
+bundle.selectRecipeState = (state: AppState) => state.currentRecipe;
+
+let selectCurrentRecipe: BundleSelector<Recipe> = createSelector(bundle.selectRecipeState, (recipeState: CurrentRecipeState) =>
+  recipeState.recipe
+);
+bundle.selectCurrentRecipe = selectCurrentRecipe;
+
+let selectCurrentStep: BundleSelector<Instruction> = createSelector(
+  bundle.selectRecipeState,
+  bundle.selectCurrentRecipe,
+  (recipeState: CurrentRecipeState, recipe: Recipe) =>
+    recipe.instructions[recipeState.currentStepIndex]
+);
+bundle.selectCurrentStep = selectCurrentStep;
+
+//endregion
+
+//region ACTIONS
+bundle.doSetRecipe = (recipe: Recipe) => ({ type: ActionType.SET_RECIPE, recipe });
+
+bundle.doConvertRecipe = (recipeUrl: string) => async ({ dispatch }: { dispatch: any }) => {
+  try {
+    // NOTE: axios is mocking this. still haven't gotten the actual request to work with axios. ARGGGH!
+    const res = await axios(recipeRequest(recipeUrl));
+    const recipe = Recipe.fromSpoonacularApi(res.data);
+    dispatch({ type: ActionType.SET_RECIPE, recipe })
+  } catch (error) {
+    dispatch({ type: ActionType.CONVERT_RECIPE_FAILED, error })
+  }
+};
+//endregion
+
+export default bundle

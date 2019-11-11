@@ -80,20 +80,6 @@ const bundle: any = {
     }
   },
   
-  doDecrementStep: () => {
-    return ({ type: ActionType.DECREMENT_STEP })
-  },
-  
-  doIncrementStep: (...args: any[]) => {
-    console.log("outside");
-    return ({ dispatch, getState }: any) => {
-      // todo: can I do this with selctors if I define this outside the bundle?
-      const recipeState = getState().currentRecipe;
-      const recipe = recipeState.recipe;
-      console.log("inside");
-      dispatch({ type: ActionType.INCREMENT_STEP })
-    }
-  }
 };
 //region SELECTORS
 // todo: this doesn't actually type the selector correctly. (typeof bundle.selectCurrentStep = any, should =
@@ -130,15 +116,18 @@ bundle.doConvertRecipe = (recipeUrl: string) => async ({ dispatch }: { dispatch:
   }
 };
 
-// bundle.doIncrementStep = () => ({ dispatch }: { dispatch: any }) => {
-//   console.log('hello from here')
-// };
+bundle.doIncrementStep = () => {
+  return ({ dispatch, getState }: any) => {
+    // todo: can I do this with selectors if I define this outside the bundle?
+    const recipeState = getState().currentRecipe;
+    const recipe = recipeState.recipe;
+    dispatch({ type: ActionType.INCREMENT_STEP })
+  }
+};
 
-// bundle.doIncrementStep = () => {
-//   console.log("sup")
-//   return { type: ActionType.INCREMENT_STEP }
-// }
-
+bundle.doDecrementStep = () => {
+  return ({ type: ActionType.DECREMENT_STEP })
+};
 //endregion
 
 export default bundle

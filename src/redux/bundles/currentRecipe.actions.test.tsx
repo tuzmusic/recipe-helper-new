@@ -1,23 +1,28 @@
 import mockRecipe from "./Recipe.mock";
 import currentRecipe, { CurrentRecipeState } from "./currentRecipe";
 import React from 'react'
+import { composeBundles } from 'redux-bundler'
 
 const mockRecipeState: CurrentRecipeState = {
   recipe: mockRecipe,
   currentStepIndex: 0
 };
-const bundle = currentRecipe;
-const { reducer, doIncrementStep, doDecrementStep } = bundle;
+
+const getStore = composeBundles(currentRecipe);
+let store = getStore();
+const state = () => store.getState().currentRecipe;
 
 describe('doIncrementStep', () => {
-  it('increments the current step when possible', () => {
-    let result = reducer(mockRecipeState, doIncrementStep());
-    expect(result.currentStepIndex).toEqual(1)
+  beforeEach(() => {
+    store = getStore()
   });
-  it('does not increment the step if we are at the final step', () => {
-    const lastIndex = mockRecipe.instructions.length - 1;
-    const state: CurrentRecipeState = { ...mockRecipeState, currentStepIndex: lastIndex };
-    let result = reducer(state, doIncrementStep());
-    expect(result.currentStepIndex).toEqual(lastIndex)
+
+  it('increments the current step when possible', () => {
+    expect(state().currentStepIndex).toEqual(0);
+    store.action('doIncrementStep');
+    expect(state().currentStepIndex).toEqual(1);
+  });
+  
+  xit('does not increment the step if we are at the final step', () => {
   });
 });

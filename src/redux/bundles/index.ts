@@ -1,6 +1,6 @@
 import { composeBundles } from 'redux-bundler'
-import bundle from "./currentRecipe";
+import currentRecipe from "./currentRecipe";
 
 export default composeBundles(
-  bundle
+  currentRecipe
 )

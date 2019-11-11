@@ -5,6 +5,7 @@ export default class Instruction {
     text = "";
     completed = false;
     ingredients: Ingredient[] = [];
+  number?: number;
 
     constructor(arg: PotentialConstructorArgument) {
         if (!arg) return;
@@ -15,11 +16,11 @@ export default class Instruction {
             this.text = arg.text;
         }
     }
-
-    static fromSpoonacularApi({step, ingredients}: SpoonacularApiInstructionStep): Instruction {
+  
+  static fromSpoonacularApi({ step, ingredients, number }: SpoonacularApiInstructionStep): Instruction {
         const inst = new Instruction(step);
+    inst.number = Number(number);
         inst.ingredients = ingredients.map(ing => new Ingredient(ing));
-        // TODO: handle ingredients
         return inst;
     }
 }

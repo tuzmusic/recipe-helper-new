@@ -14,6 +14,8 @@ interface CurrentRecipeAction {
 }
 
 enum ActionType {
+  INCREMENT_STEP,
+  DECREMENT_STEP,
   SET_RECIPE,
   CONVERT_RECIPE_STARTED,
   CONVERT_RECIPE_FAILED
@@ -22,6 +24,10 @@ enum ActionType {
 interface SetRecipeAction extends CurrentRecipeAction {
   type: ActionType.SET_RECIPE;
   recipe: Recipe
+}
+
+interface ChangeStepAction extends CurrentRecipeAction {
+  type: ActionType.INCREMENT_STEP | ActionType.DECREMENT_STEP;
 }
 
 interface ConvertStarted extends CurrentRecipeAction {
@@ -33,7 +39,7 @@ interface ConvertFailed extends CurrentRecipeAction {
   error: Error
 }
 
-type Action = SetRecipeAction | ConvertStarted | ConvertFailed
+type Action = SetRecipeAction | ChangeStepAction | ConvertStarted | ConvertFailed
 
 //endregion
 
@@ -52,6 +58,19 @@ const bundle: any = {
   
   reducer: (state: CurrentRecipeState = initialState, action: Action) => {
     switch (action.type) {
+      case ActionType.INCREMENT_STEP:
+        return {
+          ...state,
+          // todo: enable optional chaining
+          // currentStepIndex: Math.min(state.recipe?.instructions.length ?? 0, state.currentStepIndex + 1)
+          currentStepIndex: state.currentStepIndex + 1
+        };
+      case ActionType.DECREMENT_STEP:
+        return {
+          ...state,
+          // todo: handle this from the action (only dispatch if > 0)
+          currentStepIndex: Math.max(0, state.currentStepIndex - 1)
+        };
       case ActionType.SET_RECIPE:
         return { ...state, recipe: action.recipe };
       case ActionType.CONVERT_RECIPE_FAILED:
@@ -59,9 +78,23 @@ const bundle: any = {
       default:
         return state
     }
+  },
+  
+  doDecrementStep: () => {
+    return ({ type: ActionType.DECREMENT_STEP })
+  },
+  
+  doIncrementStep: (...args: any[]) => {
+    console.log("outside");
+    return ({ dispatch, getState }: any) => {
+      // todo: can I do this with selctors if I define this outside the bundle?
+      const recipeState = getState().currentRecipe;
+      const recipe = recipeState.recipe;
+      console.log("inside");
+      dispatch({ type: ActionType.INCREMENT_STEP })
+    }
   }
 };
-
 //region SELECTORS
 // todo: this doesn't actually type the selector correctly. (typeof bundle.selectCurrentStep = any, should =
 //  Instruction)
@@ -89,7 +122,6 @@ bundle.doSetRecipe = (recipe: Recipe) => ({ type: ActionType.SET_RECIPE, recipe 
 
 bundle.doConvertRecipe = (recipeUrl: string) => async ({ dispatch }: { dispatch: any }) => {
   try {
-    // NOTE: axios is mocking this. still haven't gotten the actual request to work with axios. ARGGGH!
     const res = await axios(recipeRequest(recipeUrl));
     const recipe = Recipe.fromSpoonacularApi(res.data);
     dispatch({ type: ActionType.SET_RECIPE, recipe })
@@ -97,6 +129,16 @@ bundle.doConvertRecipe = (recipeUrl: string) => async ({ dispatch }: { dispatch:
     dispatch({ type: ActionType.CONVERT_RECIPE_FAILED, error })
   }
 };
+
+// bundle.doIncrementStep = () => ({ dispatch }: { dispatch: any }) => {
+//   console.log('hello from here')
+// };
+
+// bundle.doIncrementStep = () => {
+//   console.log("sup")
+//   return { type: ActionType.INCREMENT_STEP }
+// }
+
 //endregion
 
 export default bundle

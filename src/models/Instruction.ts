@@ -17,11 +17,19 @@ export default class Instruction {
     }
   }
   
-  static fromSpoonacularApi({ step, ingredients, number }: SpoonacularApiInstructionStep): Instruction {
+  static fromSpoonacularApi({ step, ingredients, number }: SpoonacularApiInstructionStep): Instruction | null {
+    if (!Instruction.isValidStep(step)) return null;
     const inst = new Instruction(step);
     inst.number = Number(number);
     inst.ingredients = ingredients.map(ing => new Ingredient(ing));
     return inst;
+  }
+  
+  private static isValidStep(step: string) {
+    let valid = true;
+    valid = valid && (!step.match(/Step \d+$/));
+    valid = valid && (!step.match(/Advertisement/));
+    return valid;
   }
 }
 

@@ -1,12 +1,15 @@
 import React from "react";
 import Instruction from "../../models/Instruction";
 
-interface Props {step: Instruction}
+interface Props {
+  step: Instruction,
+  stepNumber: number
+}
 
-const CurrentStep: React.FC<Props> = ({ step }) => (
+const CurrentStep = ({ step, stepNumber }: Props) => (
   <div className={ 'step' }>
     <div className={ 'step-text' }>
-      { step.number }. { step.text }
+      { stepNumber }. { step.text }
     </div>
   </div>
 );

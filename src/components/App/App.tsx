@@ -6,12 +6,15 @@ import InnerAppContainer from "./InnerAppContainer";
 import Recipe from "../../models/Recipe";
 import { AppState } from "../../redux/bundles/currentRecipe";
 
-// const mock = new MockAdapter(axios);
-// mock.onGet(recipeRequest().url).reply(200, fudgyBrowniesResponse);
+export const DEV_MODE = false;
 
-// const initialState = {}
+
 const startingRecipe = Recipe.fromSpoonacularApi(fudgyBrowniesResponse);
-const initialState: AppState = { currentRecipe: { recipe: startingRecipe, currentStepIndex: 0 } };
+let initialState: AppState = { currentRecipe: { currentStepIndex: 0 } };
+if (DEV_MODE) {
+  // new MockAdapter(axios).onGet(recipeRequest().url).reply(200, fudgyBrowniesResponse);
+  initialState.currentRecipe.recipe = startingRecipe
+}
 
 const App: React.FC = () => {
   return (

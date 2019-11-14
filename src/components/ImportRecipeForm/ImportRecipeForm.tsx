@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./ImportRecipeForm.css";
+import { DEV_MODE } from "../App/App";
 
 interface ImportFormProps {
   onSubmit: (url: string) => void;
@@ -8,7 +9,7 @@ interface ImportFormProps {
 export const mockUrl = 'https://www.melskitchencafe.com/the-best-fudgy-brownies/';
 
 const ImportRecipeForm: React.FC<ImportFormProps> = ({ onSubmit }) => {
-  const [url, setUrl] = useState(mockUrl);
+  const [url, setUrl] = useState(DEV_MODE ? mockUrl : '');
   
   return (
     <div className="import-recipe-form">

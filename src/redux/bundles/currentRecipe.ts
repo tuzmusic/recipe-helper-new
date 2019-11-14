@@ -1,7 +1,7 @@
 import Recipe from "../../models/Recipe";
 import axios from "axios";
 import { recipeRequest } from "../../utils/requests";
-import { createSelector } from "reselect";
+import { createSelector } from "redux-bundler";
 import Instruction from "../../models/Instruction";
 
 //region Types
@@ -80,39 +80,29 @@ const bundle: any = {
     }
   },
   
+  selectRecipeState: (state: AppState) => state.currentRecipe,
+  
+  selectCurrentRecipe: createSelector('selectRecipeState', (recipeState: CurrentRecipeState) =>
+    recipeState.recipe
+  ),
+  
+  selectCurrentStep: createSelector(
+    'selectRecipeState',
+    'selectCurrentRecipe',
+    (recipeState: CurrentRecipeState, recipe: Recipe) =>
+      recipe.instructions[recipeState.currentStepIndex]
+  ),
+  
+  selectCurrentStepNumber: createSelector(
+    'selectCurrentRecipe',
+    'selectCurrentStep',
+    (recipe: Recipe, step: Instruction) =>
+      recipe.instructions.indexOf(step) + 1
+  )
 };
-//region SELECTORS
-// todo: this doesn't actually type the selector correctly. (typeof bundle.selectCurrentStep = any, should =
-//  Instruction)
-type BundleSelector<T> = (state: AppState) => T | undefined
-
-bundle.selectRecipeState = (state: AppState) => state.currentRecipe;
-
-let selectCurrentRecipe: BundleSelector<Recipe> = createSelector(bundle.selectRecipeState, (recipeState: CurrentRecipeState) =>
-  recipeState.recipe
-);
-bundle.selectCurrentRecipe = selectCurrentRecipe;
-
-let selectCurrentStep: BundleSelector<Instruction> = createSelector(
-  bundle.selectRecipeState,
-  bundle.selectCurrentRecipe,
-  (recipeState: CurrentRecipeState, recipe: Recipe) =>
-    recipe.instructions[recipeState.currentStepIndex]
-);
-bundle.selectCurrentStep = selectCurrentStep;
-
-let selectCurrentStepNumber: BundleSelector<number> = createSelector(
-  bundle.selectCurrentRecipe,
-  bundle.selectCurrentStep,
-  (recipe: Recipe, step: Instruction) =>
-    recipe.instructions.indexOf(step) + 1
-);
-bundle.selectCurrentStepNumber = selectCurrentStepNumber;
-
-//endregion
 
 //region ACTIONS
-bundle.doSetRecipe = (recipe: Recipe) => ({ type: ActionType.SET_RECIPE, recipe });
+bundle.doSetRecipe = (recipe: Recipe): SetRecipeAction => ({ type: ActionType.SET_RECIPE, recipe });
 
 bundle.doConvertRecipe = (recipeUrl: string) => async ({ dispatch }: { dispatch: any }) => {
   try {

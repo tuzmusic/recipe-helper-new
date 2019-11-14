@@ -1,10 +1,10 @@
 import Recipe from "../../models/Recipe";
 import axios from "axios";
 import { recipeRequest } from "../../utils/requests";
-import { createSelector } from "redux-bundler";
+import { createSelector } from "reselect";
 import Instruction from "../../models/Instruction";
 
-//region Types (probably to be exported somewhere)
+//region Types
 export interface AppState {
   currentRecipe: CurrentRecipeState,
 }
@@ -41,13 +41,6 @@ interface ConvertFailed extends CurrentRecipeAction {
 
 type Action = SetRecipeAction | ChangeStepAction | ConvertStarted | ConvertFailed
 
-type BundleSelector<T> = (state: AppState) => T | undefined
-
-type Bundle<S> = {
-  name: string,
-  reducer: (state: S, action: Action) => S,
-  [x: string]: any
-}
 //endregion
 
 export interface CurrentRecipeState {
@@ -60,7 +53,7 @@ const initialState: CurrentRecipeState = {
   currentStepIndex: 0
 };
 
-const bundle: Bundle<CurrentRecipeState> = {
+const bundle: any = {
   name: 'currentRecipe',
   
   reducer: (state: CurrentRecipeState = initialState, action: Action) => {
@@ -87,54 +80,59 @@ const bundle: Bundle<CurrentRecipeState> = {
     }
   },
   
-  //region SELECTORS
-  selectRecipeState: (state: AppState): CurrentRecipeState => state.currentRecipe,
-  
-  selectCurrentRecipe: (state: AppState): Recipe => createSelector('selectRecipeState', (recipeState: CurrentRecipeState) =>
-    recipeState.recipe
-  ),
-  
-  selectCurrentStep: (state: AppState): Instruction => createSelector(
-    'selectRecipeState',
-    'selectCurrentRecipe',
-    (recipeState: CurrentRecipeState, recipe: Recipe) =>
-      recipe.instructions[recipeState.currentStepIndex]
-  ),
-  
-  selectCurrentStepNumber: (state: AppState): number => createSelector(
-    'selectCurrentRecipe',
-    'selectCurrentStep',
-    (recipe: Recipe, step: Instruction) =>
-      recipe.instructions.indexOf(step) + 1
-  ),
-  //endregion
-  
-  //region ACTIONS
-  doSetRecipe: (recipe: Recipe): SetRecipeAction => ({ type: ActionType.SET_RECIPE, recipe }),
-  
-  doConvertRecipe: (recipeUrl: string) => async ({ dispatch }: { dispatch: any }) => {
-    try {
-      const res = await axios(recipeRequest(recipeUrl));
-      const recipe = Recipe.fromSpoonacularApi(res.data);
-      dispatch('doSetRecipe', recipe)
-    } catch (error) {
-      dispatch({ type: ActionType.CONVERT_RECIPE_FAILED, error })
-    }
-  },
-  
-  doIncrementStep: () => {
-    return ({ dispatch, getState }: any) => {
-      // todo: can I do this with selectors if I define this outside the bundle?
-      const recipeState = getState().currentRecipe;
-      const recipe = recipeState.recipe;
-      dispatch({ type: ActionType.INCREMENT_STEP })
-    }
-  },
-  
-  doDecrementStep: () => {
-    return ({ type: ActionType.DECREMENT_STEP })
-  }
-  //endregion
 };
+//region SELECTORS
+// todo: this doesn't actually type the selector correctly. (typeof bundle.selectCurrentStep = any, should =
+//  Instruction)
+type BundleSelector<T> = (state: AppState) => T | undefined
+
+bundle.selectRecipeState = (state: AppState) => state.currentRecipe;
+
+// BundleSelector<Recipe>
+bundle.selectCurrentRecipe = createSelector(bundle.selectRecipeState, (recipeState: CurrentRecipeState) =>
+  recipeState.recipe
+);
+
+// BundleSelector<Instruction>
+bundle.selectCurrentStep = createSelector(
+  bundle.selectRecipeState,
+  bundle.selectCurrentRecipe,
+  (recipeState: CurrentRecipeState, recipe: Recipe) =>
+    recipe.instructions[recipeState.currentStepIndex]
+);
+
+bundle.selectCurrentStepNumber = createSelector(
+  bundle.selectCurrentRecipe,
+  bundle.selectCurrentStep, (
+    recipe: Recipe, step: Instruction) => recipe.instructions.indexOf(step) + 1);
+
+//endregion
+
+//region ACTIONS
+bundle.doSetRecipe = (recipe: Recipe) => ({ type: ActionType.SET_RECIPE, recipe });
+
+bundle.doConvertRecipe = (recipeUrl: string) => async ({ dispatch }: { dispatch: any }) => {
+  try {
+    const res = await axios(recipeRequest(recipeUrl));
+    const recipe = Recipe.fromSpoonacularApi(res.data);
+    dispatch({ type: ActionType.SET_RECIPE, recipe })
+  } catch (error) {
+    dispatch({ type: ActionType.CONVERT_RECIPE_FAILED, error })
+  }
+};
+
+bundle.doIncrementStep = () => {
+  return ({ dispatch, getState }: any) => {
+    // todo: can I do this with selectors if I define this outside the bundle?
+    const recipeState = getState().currentRecipe;
+    const recipe = recipeState.recipe;
+    dispatch({ type: ActionType.INCREMENT_STEP })
+  }
+};
+
+bundle.doDecrementStep = () => {
+  return ({ type: ActionType.DECREMENT_STEP })
+};
+//endregion
 
 export default bundle

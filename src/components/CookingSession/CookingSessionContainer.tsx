@@ -11,12 +11,12 @@ type Props = {
   doDecrementStep: () => any
 }
 
-const CookingSessionContainer: React.FC<Props> = ({
+const CookingSessionContainer = ({
   currentRecipe,
   currentStep,
   doIncrementStep,
   doDecrementStep
-}) => {
+}: Props) => {
   return <CookingSession recipe={ currentRecipe }
                          step={ currentStep }
                          nextHandler={ doIncrementStep }

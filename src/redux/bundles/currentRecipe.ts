@@ -101,6 +101,14 @@ let selectCurrentStep: BundleSelector<Instruction> = createSelector(
 );
 bundle.selectCurrentStep = selectCurrentStep;
 
+let selectCurrentStepNumber: BundleSelector<number> = createSelector(
+  bundle.selectCurrentRecipe,
+  bundle.selectCurrentStep,
+  (recipe: Recipe, step: Instruction) =>
+    recipe.instructions.indexOf(step) + 1
+);
+bundle.selectCurrentStepNumber = selectCurrentStepNumber;
+
 //endregion
 
 //region ACTIONS

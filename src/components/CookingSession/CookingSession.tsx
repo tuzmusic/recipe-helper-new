@@ -3,9 +3,9 @@ import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
 import Recipe from "../../models/Recipe";
 import Instruction from "../../models/Instruction";
+import CurrentStep from "../CurrentStep/CurrentStep";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import CurrentStepContainer from "../CurrentStep/CurrentStepContainer";
 
 type Props = {
   recipe: Recipe,
@@ -21,7 +21,7 @@ const CookingSession: React.FC<Props> = ({ recipe, step, nextHandler, prevHandle
       <Col><Button onClick={ nextHandler }>Next</Button></Col>
     </Row>
     <Row>
-      <CurrentStepContainer/>
+      <CurrentStep step={ step }/>
     </Row>
   </Container>
 };

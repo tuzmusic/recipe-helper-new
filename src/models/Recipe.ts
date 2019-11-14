@@ -30,14 +30,10 @@ export default class Recipe {
     const recipe = new Recipe();
     
     recipe.title = title;
-    let arr = analyzedInstructions[0].steps.map(instruction =>
+    recipe.instructions = analyzedInstructions[0].steps.map((instruction) =>
       Instruction.fromSpoonacularApi(instruction)
     );
-    arr = arr.filter(Boolean);
-    console.log(arr);
-    recipe.instructions = arr as Instruction[];
-  
-    recipe.ingredients = extendedIngredients.map(ingredient =>
+    recipe.ingredients = extendedIngredients.map((ingredient) =>
       Ingredient.fromSpoonacularApi(ingredient)
     );
     

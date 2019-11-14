@@ -18,7 +18,11 @@ export default class Ingredient {
             this.id = arg.id;
         }
     }
-
+  
+  get stringDescription(): string {
+    return this.originalString
+  }
+ 
     static fromSpoonacularApi({
         id,
         name,

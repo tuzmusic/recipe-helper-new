@@ -6,7 +6,7 @@ const IngredientList: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
     <div className={ 'ingredients-list' }>
       <h2>Ingredients</h2>
       < ul>
-        { recipe.ingredients.map((ing, i) => <li key={ i }>{ ing.name }</li>) }
+        { recipe.ingredients.map((ing, i) => <li key={ i }>{ ing.stringDescription }</li>) }
       </ul>
     </div>
   )

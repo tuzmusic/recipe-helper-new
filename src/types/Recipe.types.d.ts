@@ -1,13 +1,13 @@
 export interface SpoonacularApiRecipe {
-  sourceUrl: string;
+  sourceUrl?: string;
   extendedIngredients: SpoonacularApiIngredient[];
-  id: number;
+  id?: number;
   title: string;
-  readyInMinutes: number;
-  servings: number;
-  image: string;
-  imageType: string;
-  instructions: string;
+  readyInMinutes?: number;
+  servings?: number;
+  image?: string;
+  imageType?: string;
+  instructions?: string;
   analyzedInstructions: { name: string, steps: SpoonacularApiInstructionStep[] }[]
 }
 

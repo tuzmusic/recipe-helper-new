@@ -17,10 +17,15 @@ type Props = {
 const CookingSession: React.FC<Props> = ({ recipe, step, nextHandler, prevHandler }) => {
   return <Container>
     <Row>
-      <Col><Button onClick={ prevHandler }>Prev</Button></Col>
-      <Col><Button onClick={ nextHandler }>Next</Button></Col>
+      <Col>
+        <Button onClick={ prevHandler }>Prev</Button>
+      </Col>
+      <Col>
+        <Button onClick={ nextHandler }>Next</Button>
+      </Col>
     </Row>
     <Row>
+      {/*<StepsCarouselContainer/>*/ }
       <CurrentStepContainer/>
     </Row>
   </Container>

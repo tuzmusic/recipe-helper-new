@@ -93,6 +93,9 @@ bundle.selectCurrentRecipe = createSelector(bundle.selectRecipeState, (recipeSta
   recipeState.recipe
 );
 
+// BundleSelector<Instruction[]>
+bundle.selectRecipeSteps = createSelector(bundle.selectCurrentRecipe, (recipe: Recipe) => recipe.instructions);
+
 // BundleSelector<Instruction>
 bundle.selectCurrentStep = createSelector(
   bundle.selectRecipeState,

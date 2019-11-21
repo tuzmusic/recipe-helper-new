@@ -1,0 +1,12 @@
+.carousel-container {
+    border: blue solid;
+    background-color: grey;
+    height: 200px;
+    padding: 20px 40px;
+    width: 500px;
+}
+
+.carousel-step {
+    border: red solid;
+    padding: 20px 40px;
+}

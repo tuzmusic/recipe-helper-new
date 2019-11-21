@@ -9,7 +9,7 @@ export interface AppState {
   currentRecipe: CurrentRecipeState,
 }
 
-interface CurrentRecipeAction {
+export interface CurrentRecipeAction {
   type: ActionType,
 }
 
@@ -17,29 +17,35 @@ enum ActionType {
   INCREMENT_STEP,
   DECREMENT_STEP,
   SET_RECIPE,
+  SET_STEP_INDEX,
   CONVERT_RECIPE_STARTED,
   CONVERT_RECIPE_FAILED
 }
 
-interface SetRecipeAction extends CurrentRecipeAction {
+export interface SetRecipeAction extends CurrentRecipeAction {
   type: ActionType.SET_RECIPE;
   recipe: Recipe
 }
 
-interface ChangeStepAction extends CurrentRecipeAction {
+export interface SetStepAction extends CurrentRecipeAction {
+  type: ActionType.SET_STEP_INDEX;
+  index: number
+}
+
+export interface ChangeStepAction extends CurrentRecipeAction {
   type: ActionType.INCREMENT_STEP | ActionType.DECREMENT_STEP;
 }
 
-interface ConvertStarted extends CurrentRecipeAction {
+export interface ConvertStarted extends CurrentRecipeAction {
   type: ActionType.CONVERT_RECIPE_STARTED
 }
 
-interface ConvertFailed extends CurrentRecipeAction {
+export interface ConvertFailed extends CurrentRecipeAction {
   type: ActionType.CONVERT_RECIPE_FAILED,
   error: Error
 }
 
-type Action = SetRecipeAction | ChangeStepAction | ConvertStarted | ConvertFailed
+type Action = SetStepAction | SetRecipeAction | ChangeStepAction | ConvertStarted | ConvertFailed
 
 //endregion
 
@@ -58,19 +64,8 @@ const bundle: any = {
   
   reducer: (state: CurrentRecipeState = initialState, action: Action) => {
     switch (action.type) {
-      case ActionType.INCREMENT_STEP:
-        return {
-          ...state,
-          // todo: enable optional chaining
-          // currentStepIndex: Math.min(state.recipe?.instructions.length ?? 0, state.currentStepIndex + 1)
-          currentStepIndex: state.currentStepIndex + 1
-        };
-      case ActionType.DECREMENT_STEP:
-        return {
-          ...state,
-          // todo: handle this from the action (only dispatch if > 0)
-          currentStepIndex: Math.max(0, state.currentStepIndex - 1)
-        };
+      case ActionType.SET_STEP_INDEX:
+        return { ...state, currentStepIndex: action.index };
       case ActionType.SET_RECIPE:
         return { ...state, recipe: action.recipe };
       case ActionType.CONVERT_RECIPE_FAILED:
@@ -93,6 +88,10 @@ bundle.selectCurrentRecipe = createSelector(bundle.selectRecipeState, (recipeSta
   recipeState.recipe
 );
 
+bundle.selectCurrentStepIndex = createSelector(bundle.selectRecipeState, (recipeState: CurrentRecipeState) =>
+  recipeState.currentStepIndex
+);
+
 // BundleSelector<Instruction[]>
 bundle.selectRecipeSteps = createSelector(bundle.selectCurrentRecipe, (recipe: Recipe) => recipe.instructions);
 
@@ -112,7 +111,9 @@ bundle.selectCurrentStepNumber = createSelector(
 //endregion
 
 //region ACTIONS
-bundle.doSetRecipe = (recipe: Recipe) => ({ type: ActionType.SET_RECIPE, recipe });
+bundle.doSetRecipe = (recipe: Recipe): SetRecipeAction => ({ type: ActionType.SET_RECIPE, recipe });
+
+bundle.doSetIndex = (index: number): SetStepAction => ({ type: ActionType.SET_STEP_INDEX, index });
 
 bundle.doConvertRecipe = (recipeUrl: string) => async ({ dispatch }: { dispatch: any }) => {
   try {
@@ -124,18 +125,6 @@ bundle.doConvertRecipe = (recipeUrl: string) => async ({ dispatch }: { dispatch:
   }
 };
 
-bundle.doIncrementStep = () => {
-  return ({ dispatch, getState }: any) => {
-    // todo: can I do this with selectors if I define this outside the bundle?
-    const recipeState = getState().currentRecipe;
-    const recipe = recipeState.recipe;
-    dispatch({ type: ActionType.INCREMENT_STEP })
-  }
-};
-
-bundle.doDecrementStep = () => {
-  return ({ type: ActionType.DECREMENT_STEP })
-};
 //endregion
 
 export default bundle

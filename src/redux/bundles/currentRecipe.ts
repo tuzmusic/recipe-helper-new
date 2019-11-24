@@ -2,52 +2,8 @@ import Recipe from "../../models/Recipe";
 import axios from "axios";
 import { recipeRequest } from "../../utils/requests";
 import { createSelector } from "reselect";
-import Instruction from "../../models/Instruction";
-
-//region Types
-export interface AppState {
-  currentRecipe: CurrentRecipeState,
-}
-
-export interface CurrentRecipeAction {
-  type: ActionType,
-}
-
-enum ActionType {
-  INCREMENT_STEP,
-  DECREMENT_STEP,
-  SET_RECIPE,
-  SET_STEP_INDEX,
-  CONVERT_RECIPE_STARTED,
-  CONVERT_RECIPE_FAILED
-}
-
-export interface SetRecipeAction extends CurrentRecipeAction {
-  type: ActionType.SET_RECIPE;
-  recipe: Recipe
-}
-
-export interface SetStepAction extends CurrentRecipeAction {
-  type: ActionType.SET_STEP_INDEX;
-  index: number
-}
-
-export interface ChangeStepAction extends CurrentRecipeAction {
-  type: ActionType.INCREMENT_STEP | ActionType.DECREMENT_STEP;
-}
-
-export interface ConvertStarted extends CurrentRecipeAction {
-  type: ActionType.CONVERT_RECIPE_STARTED
-}
-
-export interface ConvertFailed extends CurrentRecipeAction {
-  type: ActionType.CONVERT_RECIPE_FAILED,
-  error: Error
-}
-
-type Action = SetStepAction | SetRecipeAction | ChangeStepAction | ConvertStarted | ConvertFailed
-
-//endregion
+import Ingredient from "../../models/Ingredient";
+import { Action, ActionType, AppState, SetRecipeAction, SetStepAction, ToggleIngredientAction } from "../redux.types";
 
 export interface CurrentRecipeState {
   recipe?: Recipe,
@@ -66,6 +22,17 @@ const bundle: any = {
     switch (action.type) {
       case ActionType.SET_STEP_INDEX:
         return { ...state, currentStepIndex: action.index };
+      case ActionType.TOGGLE_INGREDIENT_DONE:
+        const recipe = state.recipe!;
+        const { ingredients } = recipe;
+        const i = ingredients.indexOf(action.ingredient);
+        const updatedIngredients = [...ingredients];
+        updatedIngredients[i].completed = !action.ingredient.completed;
+        return {
+          ...state, recipe: {
+            ...recipe, ingredients: updatedIngredients
+          }
+        };
       case ActionType.SET_RECIPE:
         return { ...state, recipe: action.recipe };
       case ActionType.CONVERT_RECIPE_FAILED:
@@ -102,18 +69,14 @@ bundle.selectCurrentStep = createSelector(
   (recipeState: CurrentRecipeState, recipe: Recipe) =>
     recipe.instructions[recipeState.currentStepIndex]
 );
-
-bundle.selectCurrentStepNumber = createSelector(
-  bundle.selectCurrentRecipe,
-  bundle.selectCurrentStep, (
-    recipe: Recipe, step: Instruction) => recipe.instructions.indexOf(step) + 1);
-
 //endregion
 
 //region ACTIONS
-bundle.doSetRecipe = (recipe: Recipe): SetRecipeAction => ({ type: ActionType.SET_RECIPE, recipe });
+bundle.doSetRecipe = (recipe: Recipe): SetRecipeAction =>
+  ({ type: ActionType.SET_RECIPE, recipe });
 
-bundle.doSetIndex = (index: number): SetStepAction => ({ type: ActionType.SET_STEP_INDEX, index });
+bundle.doSetIndex = (index: number): SetStepAction =>
+  ({ type: ActionType.SET_STEP_INDEX, index });
 
 bundle.doConvertRecipe = (recipeUrl: string) => async ({ dispatch }: { dispatch: any }) => {
   try {
@@ -125,6 +88,8 @@ bundle.doConvertRecipe = (recipeUrl: string) => async ({ dispatch }: { dispatch:
   }
 };
 
+bundle.doToggleIngredient = (ingredient: Ingredient): ToggleIngredientAction =>
+  ({ type: ActionType.TOGGLE_INGREDIENT_DONE, ingredient });
 //endregion
 
 export default bundle

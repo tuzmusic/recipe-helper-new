@@ -1,12 +1,23 @@
 .carousel-container {
+    display: flex;
     border: blue solid;
-    background-color: grey;
-    height: 200px;
-    padding: 20px 40px;
+    background-color: lightgray;
+    height: 70vh;
     width: 500px;
+    justify-content: center;
+    margin: 0px;
+    padding: 0px 40px
 }
 
 .carousel-step {
-    border: red solid;
-    padding: 20px 40px;
+    /*border: red solid;*/
+    height: 100%;
+    /*width: 100%;*/
+    margin: 0px;
+    padding: 0px 10px
+}
+
+.carousel-control-next-icon, .carousel-control-prev-icon {
+    background-color: #6c757d;
+    height: 100%;
 }

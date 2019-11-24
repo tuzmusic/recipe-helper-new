@@ -17,18 +17,22 @@ export default class Instruction {
     }
   }
   
-  static fromSpoonacularApi({ step, ingredients, number }: SpoonacularApiInstructionStep): Instruction | null {
-    if (!Instruction.isValidStep(step)) return null;
+  static fromSpoonacularApi({ step, ingredients, number }: SpoonacularApiInstructionStep): Instruction {
+    // if (!Instruction.isValidStep(step)) return null;
+    
     const inst = new Instruction(step);
+    
+    // These will get transformed in the recipe converter
+    // after we know everything about the recipe.
     inst.number = Number(number);
     inst.ingredients = ingredients.map(ing => new Ingredient(ing));
     return inst;
   }
   
-  private static isValidStep(step: string) {
+  static isValidStep({ text }: Instruction) {
     let valid = true;
-    valid = valid && (!step.match(/Step \d+$/));
-    valid = valid && (!step.match(/Advertisement/));
+    valid = valid && (!text.match(/Step \d+$/));
+    valid = valid && (!text.match(/Advertisement/));
     return valid;
   }
 }

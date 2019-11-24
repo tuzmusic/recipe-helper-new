@@ -3,9 +3,7 @@ import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
 import Recipe from "../../models/Recipe";
 import Instruction from "../../models/Instruction";
-import Col from "react-bootstrap/Col";
-import Button from "react-bootstrap/Button";
-import CurrentStepContainer from "../CurrentStep/CurrentStepContainer";
+import StepsCarouselContainer from "../StepsCarousel/StepsCarouselContainer";
 
 type Props = {
   recipe: Recipe,
@@ -14,21 +12,11 @@ type Props = {
   prevHandler: () => any
 }
 
-const CookingSession: React.FC<Props> = ({ recipe, step, nextHandler, prevHandler }) => {
-  return <Container>
+const CookingSession: React.FC<Props> = ({ recipe, step, nextHandler, prevHandler }) =>
+  <Container>
     <Row>
-      <Col>
-        <Button onClick={ prevHandler }>Prev</Button>
-      </Col>
-      <Col>
-        <Button onClick={ nextHandler }>Next</Button>
-      </Col>
+      <StepsCarouselContainer/>
     </Row>
-    <Row>
-      {/*<StepsCarouselContainer/>*/ }
-      <CurrentStepContainer/>
-    </Row>
-  </Container>
-};
+  </Container>;
 
 export default CookingSession;

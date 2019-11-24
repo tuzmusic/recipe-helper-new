@@ -3,7 +3,7 @@ import createStore from '../../redux/bundles'
 import { Provider } from 'redux-bundler-react'
 import InnerAppContainer from "./InnerAppContainer";
 import Recipe from "../../models/Recipe";
-import { AppState } from "../../redux/bundles/currentRecipe";
+import { AppState } from "../../redux/redux.types";
 import { shrimpCurryResponse } from "../../api-data/spoonacular-api/malaysianShrimpCurry";
 
 export const DEV_MODE = false;
@@ -15,9 +15,15 @@ if (DEV_MODE) {
   initialState.currentRecipe.recipe = startingRecipe
 }
 
+const store = createStore(initialState);
+
+// @ts-ignore
+if (DEV_MODE) window['store'] = store;
+
+
 const App: React.FC = () => {
   return (
-    <Provider store={ createStore(initialState) }>
+    <Provider store={ store }>
       <div className="App">
         <InnerAppContainer/>
       </div>

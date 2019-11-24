@@ -7,6 +7,7 @@ export default class Ingredient {
     originalString = "";
     number: number | undefined;
     unit = "";
+  completed = false;
 
     constructor(arg?: PotentialConstructorArgument) {
         if (!arg) return;

@@ -2,18 +2,21 @@ import React from "react";
 import Recipe from "../../models/Recipe";
 import IngredientList from "../IngredientList/IngredientList";
 import InstructionsList from "../InstructionsList/InstructionsList";
-import './RecipeSummary.css'
 import { CardAccordion } from "../CardAccordion/CardAccordion";
+import styled from "@emotion/styled";
+
+const Container = styled.div();
+const Header = styled.h1();
 
 const RecipeSummary: React.FC<{ recipe: Recipe }> = ({ recipe }) =>
-  (<div className="recipe-summary">
-    <h1>{ recipe.title }</h1>
+  (<Container>
+    <Header>{ recipe.title }</Header>
     <CardAccordion title='Ingredients'>
       <IngredientList hideTitle recipe={ recipe }/>
     </CardAccordion>
     <CardAccordion title='Instructions'>
       <InstructionsList hideTitle recipe={ recipe }/>
     </CardAccordion>
-  </div>);
+  </Container>);
 
 export default RecipeSummary

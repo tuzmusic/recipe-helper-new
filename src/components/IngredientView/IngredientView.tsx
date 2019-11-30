@@ -1,24 +1,31 @@
 import React from "react";
 import Ingredient from "../../models/Ingredient";
-import './IngredientView.css'
+import styled from "@emotion/styled";
 
 type Props = {
   ingredient: Ingredient,
-  toggleChecked: Function
+  toggleChecked: Function,
 }
 
+const Container = styled.div<{ checked: boolean }>(({ checked }) => ({
+  display: 'block',
+  textDecoration: checked ? 'line-through' : 'none'
+}));
+
+const Checkbox = styled.input<{ checked: boolean }>(({ checked }) => ({
+  display: 'inline',
+  checked
+}));
+
+const Item = styled.li({
+  display: 'inline'
+});
+
 const IngredientView: React.FC<Props> = ({ ingredient, toggleChecked }) => (
-  <div
-    onClick={ () => toggleChecked(ingredient) }
-    className={ `ingredient-view ${ ingredient.completed ? 'checked' : 'unchecked' }` }
-  >
-    <input
-      type='checkbox'
-      checked={ ingredient.completed }
-      readOnly
-    />
-    <li>{ ingredient.stringDescription }</li>
-  </div>
+  <Container onClick={ () => toggleChecked() } checked={ ingredient.completed }>
+    <Checkbox type='checkbox' checked={ ingredient.completed } readOnly/>
+    <Item>{ ingredient.stringDescription }</Item>
+  </Container>
 );
 
 export default IngredientView;

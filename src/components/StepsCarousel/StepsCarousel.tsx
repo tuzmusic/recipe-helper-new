@@ -2,9 +2,8 @@ import React from "react";
 import Instruction from "../../models/Instruction";
 import Carousel from "react-bootstrap/Carousel"
 import "./StepsCarousel.css"
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
 import StepViewContainer from "../StepView/StepViewContainer";
+import styled from "@emotion/styled";
 
 type Props = {
   recipeSteps: Instruction[],
@@ -12,28 +11,35 @@ type Props = {
   doSetIndex: (index: number) => void
 }
 
+const CarouselContainer = styled(Carousel)`
+    display: flex;
+    border: blue solid;
+    background-color: lightgray;
+    height: 70vh;
+    width: 500px;
+    justify-content: center;
+    margin: 0px;
+    padding: 0px 40px
+`;
+
+const Item = styled(Carousel.Item)`
+    height: 100%;
+    margin: 0px;
+    padding: 0px 10px
+`;
+
+const CarouselWrapper: React.FC<any> = ({ children, ...props }) =>
+  <CarouselContainer indicators={ false } wrap={ false } interval={ 0 } { ...props }>
+    { children }
+  </CarouselContainer>;
+
 const StepsCarousel: React.FC<Props> = ({ recipeSteps, currentStepIndex, doSetIndex }) => (
-  <Container>
-    <Row>
-      <Carousel
-        className={ 'carousel-container' }
-        indicators={ false }
-        activeIndex={ currentStepIndex }
-        // activeIndex={ 1 }
-        onSelect={ doSetIndex }
-        wrap={ false }
-        interval={ 0 }
-      >
-        { recipeSteps.map((step, i) =>
-          <Carousel.Item
-            key={ i }
-            className={ 'carousel-step' }>
-            <StepViewContainer step={ step }/>
-          </Carousel.Item>
-        ) }
-      </Carousel>
-    </Row>
-  </Container>
+  <CarouselWrapper activeIndex={ currentStepIndex } onSelect={ doSetIndex }>
+    { recipeSteps.map((step, i) => <Item key={ i }>
+        <StepViewContainer step={ step }/>
+      </Item>
+    ) }
+  </CarouselWrapper>
 );
 
 export default StepsCarousel;

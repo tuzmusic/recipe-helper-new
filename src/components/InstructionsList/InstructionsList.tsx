@@ -1,18 +1,23 @@
 import React from "react";
 import Recipe from "../../models/Recipe";
+import styled from "@emotion/styled";
+
+const Header = styled.h2();
+const List = styled.ul();
+const Container = styled.div();
 
 type Props = { recipe: Recipe, hideTitle?: boolean };
 
 const InstructionsList: React.FC<Props> = ({ recipe, hideTitle = false }) => {
   return (
-    <div className={ 'instructions-list' }>
-      { !hideTitle && <h2>Instructions</h2> }
-      <ol>
+    <Container>
+      { !hideTitle && <Header>Instructions</Header> }
+      <List>
         { recipe.instructions.map((inst, i) =>
           <li key={ i }>{ inst.text }</li>)
         }
-      </ol>
-    </div>
+      </List>
+    </Container>
   )
 };
 

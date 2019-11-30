@@ -43,19 +43,24 @@ export default class Recipe {
     // fix their numbers and flesh out their ingredients
     recipe.instructions.forEach((inst, i) => {
       inst.number = i + 1;
-    
-      inst.ingredients = inst.ingredients.map((instructionIng) => {
-        const fullIngredient = recipe.ingredients.find(
-          recipeIng => recipeIng.id === instructionIng.id
-        );
-      
-        // find could return null, so we'll "force-unwrap" this, which should be safe
-        // (as long as the conversion API never includes an ingredient in an instruction
-        // that isn't in the ingredients list)
-        return fullIngredient || null
-      }).filter(Boolean) as Ingredient[]
+  
+      // convert each simple ingredient object to its corresponding item from the actual list of ingredients.
+      // todo: improve parser for finding ingredients in a step
+      inst.ingredients = inst.ingredients.map((instructionIng) =>
+        recipe.ingredients
+          .find(recipeIng => recipeIng.id === instructionIng.id))
+        .filter(Boolean) as Ingredient[] // filter out ingredients that weren't found and thus returned null
     });
-    
+  
     return recipe;
+  }
+  
+  private static ingredientsInInstructions(inst: Instruction, recipe: Recipe): Ingredient[] {
+    return inst.ingredients.map((instructionIng) => {
+      const fullIngredient = recipe.ingredients.find(
+        recipeIng => recipeIng.id === instructionIng.id
+      );
+      return fullIngredient || null
+    }).filter(Boolean) as Ingredient[]
   }
 }

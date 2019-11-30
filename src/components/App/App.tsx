@@ -6,7 +6,7 @@ import Recipe from "../../models/Recipe";
 import { AppState } from "../../redux/redux.types";
 import { shrimpCurryResponse } from "../../api-data/spoonacular-api/malaysianShrimpCurry";
 
-export const DEV_MODE = true;
+export const DEV_MODE = false;
 
 const startingRecipe = Recipe.fromSpoonacularApi(shrimpCurryResponse);
 let initialState: AppState = { currentRecipe: { currentStepIndex: 0 } };

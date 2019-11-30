@@ -1,7 +1,0 @@
-div.ingredient-view > * {
-    display: inline;
-}
-
-.checked {
-    text-decoration: line-through;
-}

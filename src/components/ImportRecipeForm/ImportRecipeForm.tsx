@@ -1,20 +1,24 @@
 import React, { useState } from "react";
 import "./ImportRecipeForm.css";
 import { DEV_MODE } from "../App/App";
+import styled from "@emotion/styled";
+
+export const mockUrl = 'https://www.melskitchencafe.com/the-best-fudgy-brownies/';
 
 interface ImportFormProps {
   onSubmit: (url: string) => void;
 }
 
-export const mockUrl = 'https://www.melskitchencafe.com/the-best-fudgy-brownies/';
+const Container = styled.div({ textAlign: 'center' });
+
+const Label = styled.label({ display: 'block' });
 
 const ImportRecipeForm: React.FC<ImportFormProps> = ({ onSubmit }) => {
   const [url, setUrl] = useState(DEV_MODE ? mockUrl : '');
   
   return (
-    <div className="import-recipe-form">
-      <label htmlFor="recipe-url">Enter a url of a recipe:</label>
-      <br/>
+    <Container>
+      <Label htmlFor="recipe-url">Enter a url of a recipe:</Label>
       <input id="recipe-url-input"
              value={ url }
              type="text"
@@ -22,7 +26,7 @@ const ImportRecipeForm: React.FC<ImportFormProps> = ({ onSubmit }) => {
       />
       <br/>
       <button onClick={ () => onSubmit(url) }>Submit</button>
-    </div>
+    </Container>
   );
 };
 
